@@ -1,13 +1,15 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from 'next';
+
 import { PRICE, PrismaClient } from '@prisma/client';
+import { NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
+
 type Data = {
   message: string;
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+export async function GET() {
   await prisma.table.deleteMany();
   await prisma.review.deleteMany();
   await prisma.item.deleteMany();
@@ -1202,5 +1204,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     ],
   });
 
-  res.status(200).json({ message: 'DB updated!' });
+  // res.status(200).json({ message: 'DB Updated!' });
+  // return new Response(JSON.stringify({ message: 'DB Updated!' }));
+
+  return NextResponse.json({ message: 'DB Updated!' });
 }
