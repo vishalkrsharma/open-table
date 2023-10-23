@@ -5,10 +5,6 @@ import { NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
-type Data = {
-  message: string;
-};
-
 export async function GET() {
   await prisma.table.deleteMany();
   await prisma.review.deleteMany();
@@ -1203,9 +1199,6 @@ export async function GET() {
       },
     ],
   });
-
-  // res.status(200).json({ message: 'DB Updated!' });
-  // return new Response(JSON.stringify({ message: 'DB Updated!' }));
 
   return NextResponse.json({ message: 'DB Updated!' });
 }

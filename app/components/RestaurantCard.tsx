@@ -1,7 +1,7 @@
-import { RestaurantCardType } from '@/types/RestaurantCardType';
 import Link from 'next/link';
 import Price from './Price';
 import Stars from './Stars';
+import { RestaurantCardType } from '../page';
 
 interface Props {
   restaurant: RestaurantCardType;
