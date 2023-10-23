@@ -35,11 +35,8 @@ const fetchRestaurants = async (): Promise<RestaurantCardType[]> => {
 export default async function Home() {
   const restaurants = await fetchRestaurants();
 
-  console.log(restaurants);
-
   return (
     <main>
-      {restaurants[0].reviews.length}
       <Header />
       <div className='py-3 px-36 mt-10 flex flex-wrap justify-center'>
         {restaurants.map((restaurant) => (
