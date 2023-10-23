@@ -1,15 +1,13 @@
 import RestaurantNavBar from '../components/RestaurantNavBar';
 import Menu from '../components/Menu';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import db from '@/lib/db';
 
 export const metadata = {
   title: 'Menu - OpenTable',
 };
 
 const fetchMenu = async (slug: string) => {
-  const restaurant = await prisma.restaurant.findUnique({
+  const restaurant = await db.restaurant.findUnique({
     where: {
       slug,
     },
