@@ -70,8 +70,9 @@ const SearchSideBar = async ({
       <div className='mt-3 pb-4'>
         <h1 className='mb-2'>Price</h1>
         <div className='flex'>
-          {prices?.map(({ price, label }) => (
+          {prices?.map(({ price, label }, idx) => (
             <Link
+              key={idx}
               href={{
                 pathname: '/search',
                 query: {
