@@ -8,7 +8,7 @@ interface Props {
 }
 
 const RestaurantCard = ({ restaurant }: Props) => {
-  const { id, name, main_image, cuisine, slug, location, price, reviews } = restaurant;
+  const { name, main_image, cuisine, slug, location, price, reviews } = restaurant;
 
   return (
     <Link href={`/restaurant/${slug}`}>
