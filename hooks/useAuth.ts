@@ -1,11 +1,12 @@
 import { AuthenticationContext } from '@/contexts/AuthContext';
 import axios from 'axios';
-import { useCookies } from 'react-cookie';
+// import { useCookies } from 'react-cookie';
 import { useContext } from 'react';
+import { setCookie, deleteCookie } from 'cookies-next';
 
 const useAuth = () => {
   const { loading, data, error, setAuthState } = useContext(AuthenticationContext);
-  const [cookie, setCookie, removeCookie] = useCookies(['jwt']);
+  // const [cookie, setCookie, removeCookie] = useCookies(['jwt']);
 
   const signin = async (
     {
@@ -32,11 +33,12 @@ const useAuth = () => {
         error: null,
         loading: false,
       });
-      setCookie('jwt', res.data.token, {
-        path: '/',
-        maxAge: 3600 * 24,
-        sameSite: true,
-      });
+      // setCookie('jwt', res.data.token, {
+      //   path: '/',
+      //   maxAge: 3600 * 24,
+      //   sameSite: true,
+      // });
+      setCookie('jwt', res.data.token);
       handleClose();
     } catch (err: any) {
       setAuthState({
@@ -100,7 +102,8 @@ const useAuth = () => {
   };
 
   const signOut = () => {
-    removeCookie('jwt');
+    // removeCookie('jwt');
+    deleteCookie('jwt');
     setAuthState({
       data: null,
       error: null,
