@@ -16,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AuthContext>
             <main className='max-w-screen-2xl m-auto bg-white'>
               <NavBar />
-              {children}A
+              {children}
             </main>
           </AuthContext>
         </main>

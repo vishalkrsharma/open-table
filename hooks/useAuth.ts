@@ -32,10 +32,9 @@ const useAuth = () => {
         error: null,
         loading: false,
       });
-      console.log(res);
       setCookie('jwt', res.data.token, {
         path: '/',
-        maxAge: 3600 * 24, // Expires after 1hr
+        maxAge: 3600 * 24,
         sameSite: true,
       });
       handleClose();
@@ -84,6 +83,11 @@ const useAuth = () => {
         data: res.data,
         error: null,
         loading: false,
+      });
+      setCookie('jwt', res.data.token, {
+        path: '/',
+        maxAge: 3600 * 24,
+        sameSite: true,
       });
       handleClose();
     } catch (err: any) {

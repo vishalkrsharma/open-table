@@ -46,8 +46,6 @@ export default function AuthContext({ children }: { children: React.ReactNode })
     try {
       const jwt = getCookie('jwt');
 
-      console.log(jwt);
-
       if (!jwt) {
         return setAuthState({
           data: null,
