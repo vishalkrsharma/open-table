@@ -6,11 +6,11 @@ export async function middleware(req: NextRequest, res: NextResponse) {
   const token = bearerToken?.split(' ')[1];
 
   if (!bearerToken) {
-    return NextResponse.json({ message: 'Unauthorized request' }, { status: 401 });
+    return NextResponse.json({ message: 'Unauthorized request (No Bearer Token)' }, { status: 401 });
   }
 
   if (!token) {
-    return NextResponse.json({ message: 'Unauthorized request' }, { status: 401 });
+    return NextResponse.json({ message: 'Unauthorized request (no token)' }, { status: 401 });
   }
 
   const secret = new TextEncoder().encode(process.env.JWT_SECRET);
@@ -18,7 +18,7 @@ export async function middleware(req: NextRequest, res: NextResponse) {
   try {
     await jose.jwtVerify(token, secret);
   } catch (err) {
-    return NextResponse.json({ message: 'Unauthorized request' }, { status: 401 });
+    return NextResponse.json({ message: 'Unauthorized request(invalid token)' }, { status: 401 });
   }
 }
 
