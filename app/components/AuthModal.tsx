@@ -1,10 +1,12 @@
 'use client';
 
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState, useContext } from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import AuthModalInput from './AuthModalInput';
-import validator from 'validator';
+import useAuth from '@/hooks/useAuth';
+import { AuthenticationContext } from '@/contexts/AuthContext';
+import { Alert, CircularProgress } from '@mui/material';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -19,9 +21,8 @@ const style = {
 
 const AuthModal = ({ isSignin }: { isSignin: boolean }) => {
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const [error, setError] = useState('');
+
+  const [disabled, setDisabled] = useState(true);
   const [userData, setUserData] = useState({
     firstName: '',
     lastName: '',
@@ -30,6 +31,28 @@ const AuthModal = ({ isSignin }: { isSignin: boolean }) => {
     city: '',
     password: '',
   });
+
+  useEffect(() => {
+    const { firstName, lastName, email, phone, city, password } = userData;
+
+    if (isSignin) {
+      if (email && password) {
+        return setDisabled(false);
+      }
+    } else {
+      if (firstName && lastName && email && phone && city && password) {
+        return setDisabled(false);
+      }
+    }
+
+    setDisabled(true);
+  }, [userData]);
+
+  const { signin, signup } = useAuth();
+  const { loading, data, error } = useContext(AuthenticationContext);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const renderContent = (signinContent: string, signupContent: string) => {
     return isSignin ? signinContent : signupContent;
@@ -54,24 +77,23 @@ const AuthModal = ({ isSignin }: { isSignin: boolean }) => {
   };
 
   const handleSubmit = () => {
-    if (!validator.isEmail(userData.email)) {
-      setError('Email not valid');
-      return;
-    }
+    const { firstName, lastName, email, city, phone, password } = userData;
 
-    if (!validator.isNumeric(userData.phone) || !validator.isMobilePhone(userData.phone)) {
-      setError('Phone number not valid');
-      return;
+    if (isSignin) {
+      signin({ email, password }, handleClose);
+    } else {
+      signup(
+        {
+          firstName,
+          lastName,
+          email,
+          password,
+          phone,
+          city,
+        },
+        handleClose
+      );
     }
-    setUserData({
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      city: '',
-      password: '',
-    });
-    setError('');
   };
 
   return (
@@ -89,29 +111,42 @@ const AuthModal = ({ isSignin }: { isSignin: boolean }) => {
         aria-describedby='modal-modal-description'
       >
         <Box sx={style}>
-          <div className='p-2 '>
-            <div className='uppercase font-bold text-center pb-2 border-b mb-2'>
-              <p className='text-md'>{renderContent('Sign in', 'Create account')}</p>
+          {loading ? (
+            <div className='flex items-center justify-center p-2 h-[400px]'>
+              <CircularProgress />
             </div>
-            <div className='m-auto'>
-              <h2 className='text-2xl font-light text-center'>{renderContent('Log into your account', 'Create your OpenTable account')}</h2>
-              <div className='h-[400px] flex flex-col justify-between'>
+          ) : (
+            <div className='p-2 h-[400px]'>
+              <div className='uppercase font-bold text-center pb-2 border-b mb-2'>
+                <p className='text-md'>{renderContent('Sign in', 'Create account')}</p>
+                <p>{data?.firstName}</p>
+              </div>
+              <div className='m-auto'>
+                <h2 className='text-2xl font-light text-center'>{renderContent('Log into your account', 'Create your OpenTable account')}</h2>
                 <AuthModalInput
                   userData={userData}
                   handleChange={handleChange}
                   handlePhoneChange={handlePhoneChange}
                   isSignin={isSignin}
                 />
-                <div className='text-red-600'>{error}</div>
                 <button
                   className='uppercase bg-red-600 w-full text-white p-3 rounded text-sm mb-5 disabled:bg-gray-400'
                   onClick={handleSubmit}
+                  disabled={disabled}
                 >
                   {renderContent('Sign in', 'Create  account')}
                 </button>
               </div>
+              {error ? (
+                <Alert
+                  severity='error'
+                  className='mb-4'
+                >
+                  {error}
+                </Alert>
+              ) : null}
             </div>
-          </div>
+          )}
         </Box>
       </Modal>
     </div>

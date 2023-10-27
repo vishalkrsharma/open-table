@@ -75,5 +75,19 @@ export async function POST(req: NextRequest) {
 
   const token = await new jose.SignJWT({ email }).setProtectedHeader({ alg }).setExpirationTime('24h').sign(secret);
 
-  return NextResponse.json({ token }, { status: 200 });
+  return NextResponse.json(
+    {
+      firstName: user.first_name,
+      lastName: user.last_name,
+      email: user.email,
+      phone: user.phone,
+      city: user.city,
+    },
+    {
+      status: 200,
+      headers: {
+        'Set-Cookie': `token=${token}; maxAge=60*6*24`,
+      },
+    }
+  );
 }

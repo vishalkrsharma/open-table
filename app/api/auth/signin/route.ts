@@ -4,7 +4,7 @@ import validator from 'validator';
 import bcrypt from 'bcrypt';
 import * as jose from 'jose';
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest, res: NextResponse) {
   const userData = await req.json();
 
   const { email, password } = userData;
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: 'Email not found' }, { status: 401 });
   }
 
-  const isMatch = bcrypt.compare(password, foundUserByEmail.password);
+  const isMatch = bcrypt.compareSync(password, foundUserByEmail.password);
 
   if (!isMatch) {
     return NextResponse.json({ message: 'Wrong password' }, { status: 401 });
@@ -51,5 +51,17 @@ export async function POST(req: NextRequest) {
 
   const token = await new jose.SignJWT({ email }).setProtectedHeader({ alg }).setExpirationTime('24h').sign(secret);
 
-  return NextResponse.json({ token }, { status: 200 });
+  return NextResponse.json(
+    {
+      firstName: foundUserByEmail.first_name,
+      lastName: foundUserByEmail.last_name,
+      email: foundUserByEmail.email,
+      phone: foundUserByEmail.phone,
+      city: foundUserByEmail.city,
+      token,
+    },
+    {
+      status: 200,
+    }
+  );
 }
