@@ -86,9 +86,6 @@ export async function POST(req: NextRequest) {
     },
     {
       status: 200,
-      // headers: {
-      //   'Set-Cookie': `token=${token}; maxAge=60*6*24`,
-      // },
     }
   );
 }

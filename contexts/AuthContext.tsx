@@ -1,7 +1,6 @@
 'use client';
 
 import axios from 'axios';
-import { getCookie } from 'cookies-next';
 import React, { useState, createContext, useEffect } from 'react';
 
 interface User {
@@ -44,7 +43,7 @@ export default function AuthContext({ children }: { children: React.ReactNode })
       loading: true,
     });
     try {
-      const jwt = getCookie('jwt');
+      const jwt = localStorage.getItem('jwt');
 
       if (!jwt) {
         return setAuthState({
