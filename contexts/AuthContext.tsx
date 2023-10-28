@@ -31,7 +31,7 @@ export const AuthenticationContext = createContext<AuthState>({
 
 export default function AuthContext({ children }: { children: React.ReactNode }) {
   const [authState, setAuthState] = useState<State>({
-    loading: true,
+    loading: false,
     data: null,
     error: null,
   });
@@ -76,7 +76,7 @@ export default function AuthContext({ children }: { children: React.ReactNode })
   };
 
   useEffect(() => {
-    fetchUser();
+    // fetchUser();
   }, []);
 
   return (

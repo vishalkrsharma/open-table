@@ -30,7 +30,6 @@ const useAuth = () => {
         error: null,
         loading: false,
       });
-      localStorage.setItem('jwt', res.data.token);
       handleClose();
     } catch (err: any) {
       setAuthState({

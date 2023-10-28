@@ -82,7 +82,6 @@ export async function POST(req: NextRequest) {
       email: user.email,
       phone: user.phone,
       city: user.city,
-      token,
     },
     {
       status: 200,

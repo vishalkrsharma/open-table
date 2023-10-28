@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import NavBar from './components/NavBar';
 import AuthContext from '@/contexts/AuthContext';
+import GetUser from './components/GetUser';
 
 export const metadata: Metadata = {
   title: 'OpenTable',
@@ -14,6 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <main className='bg-gray-100 min-h-screen w-screen'>
           <AuthContext>
+            <GetUser />
             <main className='max-w-screen-2xl m-auto bg-white'>
               <NavBar />
               {children}

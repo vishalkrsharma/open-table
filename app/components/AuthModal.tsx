@@ -49,10 +49,16 @@ const AuthModal = ({ isSignin }: { isSignin: boolean }) => {
   }, [userData]);
 
   const { signin, signup } = useAuth();
-  const { loading, data, error } = useContext(AuthenticationContext);
+  const { loading, data, error, setAuthState } = useContext(AuthenticationContext);
 
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setAuthState((prev) => ({
+      ...prev,
+      error: null,
+    }));
+  };
 
   const renderContent = (signinContent: string, signupContent: string) => {
     return isSignin ? signinContent : signupContent;

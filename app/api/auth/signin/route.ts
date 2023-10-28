@@ -3,8 +3,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import validator from 'validator';
 import bcrypt from 'bcrypt';
 import * as jose from 'jose';
+import { sign } from 'jsonwebtoken';
+import { serialize } from 'cookie';
 
-export async function POST(req: NextRequest, res: NextResponse) {
+const MAX_AGE = 60 * 60 * 24;
+
+export async function POST(req: Request) {
   const userData = await req.json();
 
   const { email, password } = userData;
@@ -46,22 +50,35 @@ export async function POST(req: NextRequest, res: NextResponse) {
     return NextResponse.json({ message: 'Wrong password' }, { status: 401 });
   }
 
-  const alg = 'HS256';
-  const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+  // const alg = 'HS256';
+  // const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
-  const token = await new jose.SignJWT({ email }).setProtectedHeader({ alg }).setExpirationTime('24h').sign(secret);
+  // const token = await new jose.SignJWT({ email }).setProtectedHeader({ alg }).setExpirationTime('24h').sign(secret);
 
-  return NextResponse.json(
-    {
-      firstName: foundUserByEmail.first_name,
-      lastName: foundUserByEmail.last_name,
-      email: foundUserByEmail.email,
-      phone: foundUserByEmail.phone,
-      city: foundUserByEmail.city,
-      token,
-    },
-    {
-      status: 200,
-    }
-  );
+  const secret = process.env.JWT_SECRET || '';
+
+  const token = sign({ email }, secret, {
+    expiresIn: MAX_AGE,
+  });
+
+  const seralized = serialize('jwt', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: MAX_AGE,
+    path: '/',
+  });
+
+  const res = {
+    firstName: foundUserByEmail.first_name,
+    lastName: foundUserByEmail.last_name,
+    email: foundUserByEmail.email,
+    phone: foundUserByEmail.phone,
+    city: foundUserByEmail.city,
+  };
+
+  return new Response(JSON.stringify(res), {
+    status: 200,
+    headers: { 'Set-Cookie': seralized },
+  });
 }
