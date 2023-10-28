@@ -16,7 +16,8 @@ export async function middleware(req: NextRequest, res: NextResponse) {
   const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
   try {
-    await jose.jwtVerify(token, secret);
+    const a = await jose.jwtVerify(token, secret);
+    console.log(a);
   } catch (err) {
     return NextResponse.json({ message: 'Unauthorized request(invalid token)' }, { status: 401 });
   }
