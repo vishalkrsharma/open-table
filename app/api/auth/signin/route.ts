@@ -69,16 +69,30 @@ export async function POST(req: Request) {
     path: '/',
   });
 
-  const res = {
-    firstName: foundUserByEmail.first_name,
-    lastName: foundUserByEmail.last_name,
-    email: foundUserByEmail.email,
-    phone: foundUserByEmail.phone,
-    city: foundUserByEmail.city,
-  };
+  // const res = {
+  //   firstName: foundUserByEmail.first_name,
+  //   lastName: foundUserByEmail.last_name,
+  //   email: foundUserByEmail.email,
+  //   phone: foundUserByEmail.phone,
+  //   city: foundUserByEmail.city,
+  // };
 
-  return new Response(JSON.stringify(res), {
-    status: 200,
-    headers: { 'Set-Cookie': seralized },
-  });
+  return NextResponse.json(
+    {
+      firstName: foundUserByEmail.first_name,
+      lastName: foundUserByEmail.last_name,
+      email: foundUserByEmail.email,
+      phone: foundUserByEmail.phone,
+      city: foundUserByEmail.city,
+    },
+    {
+      status: 200,
+      headers: { 'Set-Cookie': seralized },
+    }
+  );
+
+  // return new Response(JSON.stringify(res), {
+  //   status: 200,
+  //   headers: { 'Set-Cookie': seralized },
+  // });
 }

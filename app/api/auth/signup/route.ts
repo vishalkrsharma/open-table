@@ -3,6 +3,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import validator from 'validator';
 import bcrypt from 'bcrypt';
 import * as jose from 'jose';
+import { sign } from 'jsonwebtoken';
+import { serialize } from 'cookie';
+
+const MAX_AGE = 60 * 60 * 24;
 
 export async function POST(req: NextRequest) {
   const userData = await req.json();
@@ -70,10 +74,24 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  const alg = 'HS256';
-  const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+  // const alg = 'HS256';
+  // const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
-  const token = await new jose.SignJWT({ email }).setProtectedHeader({ alg }).setExpirationTime('24h').sign(secret);
+  // const token = await new jose.SignJWT({ email }).setProtectedHeader({ alg }).setExpirationTime('24h').sign(secret);
+
+  const secret = process.env.JWT_SECRET || '';
+
+  const token = sign({ email }, secret, {
+    expiresIn: MAX_AGE,
+  });
+
+  const seralized = serialize('jwt', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: MAX_AGE,
+    path: '/',
+  });
 
   return NextResponse.json(
     {
